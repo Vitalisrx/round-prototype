@@ -56,7 +56,7 @@ try:
             p.locator('[data-action="detail"][data-id="g-spades"]').click()
             p.locator('#dialog [data-action="inspect"][data-id="p0"]').click()
             check('Public inspector is person-specific','Maya' in p.locator('#dialog').inner_text())
-            p.locator('#dialog [data-action="back"]').click()
+            p.locator('#dialog [data-action="back"][aria-label="Back"]').click()
             p.locator('#dialog [data-action="join"]').click()
             check('Public joining updates actual local state',p.evaluate('Round5.G(RoundV5.snapshot()).phase')=='ready')
             p.locator('[data-action="simMeet"]').click();p.locator('[data-action="here"]').click();p.locator('[data-action="simFinish"]').click()
