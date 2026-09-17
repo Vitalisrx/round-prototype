@@ -1,0 +1,35 @@
+name: V4 prototype checks
+on:
+  push:
+    branches: [main, design/v4-20260917]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JavaScript syntax
+        run: |
+          node --check v4-core.js
+          node --check v4-art.js
+          node --check v4-app.js
+      - name: Run 52 core invariant checks
+        run: node test-core.js
+      - name: Check static application entry point
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          html = p.read_text()
+          for name in ('v4.css', 'v4-core.js', 'v4-art.js', 'v4-app.js'):
+              assert name in html, name + ' is not referenced'
+              assert Path(name).is_file(), name + ' is missing'
+          assert 'Content-Security-Policy' in html
+          assert 'Fictional people & places' in html
+          assert 'V4' in html
+          print('Complete V4 source and demo boundary present.')
+          PY
